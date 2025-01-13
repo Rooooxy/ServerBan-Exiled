@@ -19,3 +19,38 @@ ServerBan_Exiled 是一个基于 Exiled 框架开发的服务器插件，旨在�
   ```txt
   封禁UserId-{bannedPlayer.UserId};封禁NickName-{bannedNickname};封禁IP-{bannedPlayer.IPAddress};封禁到期时间-{banExpiresString};执行人-{executorName};执行人UserId-{executorUserId};封禁原因-{banReason};
   ```
+### （四）玩家封禁通知
+当玩家被封禁时，会根据不同情况进行广播通知：
+  - 如果是服务器执行的封禁，会广播消息 [{ev.Target.Nickname}]已被全服封禁\n原因:[{ev.Reason}]。
+  - 若由其他玩家执行封禁，会广播消息 [{ev.Target.Nickname}]已被[{ev.Player.Nickname}]全服封禁\n原因:[{ev.Reason}]。
+### （五）玩家封禁处理
+对于被封禁且封禁尚未过期的玩家，将收到一个包含详细信息的断开连接消息，包含以下内容：
+  - 被封禁的信息，包括 SteamID 和 IP。
+  - 封禁的原因。
+  - 解封时间。
+  - 申诉 QQ 群号（从 PluginConfig.qqGroup 中获取）。
+  - 执行人信息。
+  - 格式如下：
+  ```txt
+  你已被全服封禁，如有疑问去群内联系管理员申诉
+  SteamID:[{player.UserId}]  IP:[{player.IPAddress}]
+  封禁原因: {banReason}
+  解封时间:[{unbanTime}]
+  申诉QQ群:{BannedDataPlugin.PluginConfig.qqGroup}
+  执行人: {executorNickName} (SteamID: {executorUserId})
+  ```
+### （六）过期封禁处理
+对于已经过期的封禁记录，会在玩家登录检查时自动从 Data.txt 文件中移除，确保不再对玩家进行误判。
+## 三、使用方法
+### （一）配置文件
+确保在 Config 文件中正确配置以下选项：
+  - IsAddBannedData：控制是否在封禁玩家时将封禁信息录入文件。
+  - IsUserIdCheck：控制是否对玩家的 UserId 进行封禁检查。
+  - IsIPCheck：控制是否对玩家的 IP 进行封禁检查。
+  - IsNicknameCheck：控制是否对玩家的 Nickname 进行封禁检查。
+  - qqGroup：设置申诉的 QQ 群号，方便玩家申诉封禁问题。
+### （二）安装步骤
+1.将插件文件添加到C:\Users\User\AppData\Roaming\EXILED\Plugins插件目录。
+2.启动服务器，插件会自动读取 Config 文件进行相应的配置初始化。
+3.确保 C:/BannedData 目录存在，如果不存在，插件会自动创建。
+4.确保 C:/BannedData/Data.txt 文件存在，如果不存在，插件会自动创建。
