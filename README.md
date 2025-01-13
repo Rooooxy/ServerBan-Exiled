@@ -54,3 +54,29 @@ ServerBan_Exiled 是一个基于 Exiled 框架开发的服务器插件，旨在�
 2.启动服务器，插件会自动读取 Config 文件进行相应的配置初始化。
 3.确保 C:/BannedData 目录存在，如果不存在，插件会自动创建。
 4.确保 C:/BannedData/Data.txt 文件存在，如果不存在，插件会自动创建。
+## 四、代码结构
+### （一）核心类：BannedDataPlugin
+OnEnabled () 方法：
+  - 初始化 BannedDataPath，检查并创建 BannedData 目录和 Data.txt 文件。
+  - 注册 Player.Verified 事件处理器，在玩家验证时调用 CheckBan 方法。
+  - 根据 IsAddBannedData 配置，注册 Player.Banning 事件处理器。
+OnDisabled () 方法：
+  - 移除 Player.Verified 和 Player.Banning 事件处理器。
+OnPlayerVerified (VerifiedEventArgs ev) 方法：
+  - 调用 CheckBan 方法对玩家进行封禁检查。
+OnPlayerBanning (BanningEventArgs ev) 方法：
+  - 处理玩家封禁事件，记录封禁信息，包括封禁时长、玩家信息、执行人信息和封禁原因，并将信息存储在 Data.txt 文件中。
+  - 延迟发送封禁广播消息。
+BanPlayer (Player bannedPlayer, Player executor, DateTime banExpires, string banReason) 方法：
+  - 构建封禁信息，并将其添加到 Data.txt 文件中。
+  - 处理封禁过期和移除过期封禁记录。
+IsIpBanned (string playerIp, string bannedIp) 方法：
+ - 比较玩家的 IP 地址和封禁记录中的 IP 地址，支持通配符，判断玩家是否应因 IP 被封禁。
+## 五、注意事项
+  - 请确保服务器有足够的权限创建和修改 C:/BannedData 目录和 Data.txt 文件，以避免文件操作异常。
+  - 当修改 Config 文件中的配置时，需要重启服务器以使新配置生效。
+  - 在使用 IP 检查时，注意通配符 * 的使用，它可能会影响 IP 封禁的范围。
+  - 对于代码的修改和扩展，请确保遵循 Exiled 框架的开发规范，避免出现兼容性问题。
+## 六、贡献与支持
+  - 如果你发现了该插件的问题或有改进的建议，欢迎在 GitHub 上提交 issue 或 pull request。
+## 七、天天开心:)
